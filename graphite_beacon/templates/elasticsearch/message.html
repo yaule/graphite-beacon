@@ -8,14 +8,14 @@
                 <tr>
                     <td align="left" valign="top" >
                     <b> 报警级别:</b> {{ level.upper() }}<br/>
-				{% if rule %}
+                    {% if rule %}
                     <b>报警规则:</b> {{ rule['raw'] }}</b> <br/>
            	    {% end %}
                     <b> 系统当前值:</b> {{ alert.convert(value) }}</b><br/>
-					<b>抓取时间:</b> {{ dt.datetime.now(tz).strftime('%Y/%m/%d %H:%M') }}</b> <br/>
-				{% if target %}
+                    <b>抓取时间:</b> {{ dt.datetime.now(tz).strftime('%Y/%m/%d %H:%M') }}</b> <br/>
+		    {% if target %}
                     <b>监控对象:</b> {{ target }}</b> <br/>
-				{% end %}
+		    {% end %}
                     </td>
                 </tr>
             </table>
@@ -23,3 +23,5 @@
     </tr>
 </table>
 {% end %}
+
+

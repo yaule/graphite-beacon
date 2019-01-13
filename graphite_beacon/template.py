@@ -11,6 +11,13 @@ TEMPLATES = {
         'telegram': LOADER.load('graphite/short.txt'),
         'slack': LOADER.load('graphite/slack.txt')
     },
+    'elasticsearch': {
+        'html': LOADER.load('elasticsearch/message.html'),
+        'text': LOADER.load('elasticsearch/message.txt'),
+        'short': LOADER.load('elasticsearch/short.txt'),
+        'telegram': LOADER.load('elasticsearch/short.txt'),
+        'slack': LOADER.load('elasticsearch/slack.txt')
+    },
     'url': {
         'html': LOADER.load('url/message.html'),
         'text': LOADER.load('url/message.txt'),

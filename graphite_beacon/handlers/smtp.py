@@ -1,4 +1,5 @@
 import datetime as dt
+import pytz
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from smtplib import SMTP
@@ -35,40 +36,39 @@ class SMTPHandler(AbstractHandler):
     @gen.coroutine
     def notify(self, level, *args, **kwargs):
         LOGGER.debug("Handler (%s) %s", self.name, level)
-
+        to = set(self.options['to'] + kwargs.pop('smtp'))
         msg = self.get_message(level, *args, **kwargs)
         msg['Subject'] = self.get_short(level, *args, **kwargs)
         msg['From'] = self.options['from']
-        msg['To'] = ", ".join(self.options['to'])
+        msg['To'] = ", ".join(to)
 
         smtp = SMTP()
-        yield smtp_connect(smtp, self.options['host'], self.options['port'])  # pylint: disable=no-value-for-parameter
+        yield smtp_connect(smtp, self.options['host'], self.options['port'])
 
         if self.options['use_tls']:
-            yield smtp_starttls(smtp)  # pylint: disable=no-value-for-parameter
+            yield smtp_starttls(smtp)
 
         if self.options['username'] and self.options['password']:
-            yield smtp_login(smtp,  # pylint: disable=no-value-for-parameter
-                             self.options['username'],
-                             self.options['password'])
+            yield smtp_login(smtp, self.options['username'], self.options['password'])
 
         try:
-            LOGGER.debug("Send message to: %s", ", ".join(self.options['to']))
-            smtp.sendmail(self.options['from'], self.options['to'], msg.as_string())
+            LOGGER.info("Send message to: %s at %s" % (", ".join(to),dt.datetime.now(pytz.timezone('Asia/Shanghai')).strftime('%Y/%m/%d %H:%M')))
+            smtp.sendmail(self.options['from'], to, msg.as_string())
         finally:
             smtp.quit()
 
-    def get_message(self, level, alert, value, target=None, ntype=None, rule=None):
+    def get_message(self, level, alert, value, target=None, ntype=None, rule=None, smtp=None, call=None):
         txt_tmpl = TEMPLATES[ntype]['text']
+        tz = pytz.timezone('Asia/Shanghai')
         ctx = dict(
             reactor=self.reactor, alert=alert, value=value, level=level, target=target,
-            dt=dt, rule=rule, **self.options)
+            dt=dt, tz=tz, rule=rule, **self.options)
         msg = MIMEMultipart('alternative')
-        plain = MIMEText(str(txt_tmpl.generate(**ctx)), 'plain')
+        plain = MIMEText(str(txt_tmpl.generate(**ctx)), 'plain', 'utf-8')
         msg.attach(plain)
         if self.options['html']:
             html_tmpl = TEMPLATES[ntype]['html']
-            html = MIMEText(str(html_tmpl.generate(**ctx)), 'html')
+            html = MIMEText(str(html_tmpl.generate(**ctx)), 'html', 'utf-8')
             msg.attach(html)
         return msg
 
@@ -86,5 +86,3 @@ def smtp_starttls(smtp, callback):
 @concurrent.return_future
 def smtp_login(smtp, username, password, callback):
     callback(smtp.login(username, password))
-
-#  pylama:ignore=E1120

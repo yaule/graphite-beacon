@@ -1,0 +1,9 @@
+{% if level == 'normal' %}
+
+    {{level.upper() }} <{{ alert.name }}> {% if target %}({{', '.join(target.split('.'))}}){% end %} is back to normal.
+
+{% else %}
+
+    {{level.upper() }} <{{ alert.name }}> {% if target %}({{', '.join(target.split('.'))}}){% end %} failed.
+
+{% end %}

@@ -1,7 +1,7 @@
 from tornado import log
 
-from graphite_beacon import _compat as _
-from graphite_beacon.template import TEMPLATES
+from .. import _compat as _
+from ..template import TEMPLATES
 
 LOGGER = log.gen_log
 
@@ -16,7 +16,7 @@ class HandlerMeta(type):
         name = params.get('name')
         if name:
             mcs.handlers[name] = cls
-            LOGGER.info("Register Handler: %s", name)
+            LOGGER.info("Register Handler: %s" % name)
         return cls
 
     @classmethod
@@ -42,7 +42,7 @@ class AbstractHandler(_.with_metaclass(HandlerMeta)):
         self.init_handler()
         LOGGER.debug('Handler "%s" has inited: %s', self.name, self.options)
 
-    def get_short(self, level, alert, value, target=None, ntype=None, rule=None):  # pylint: disable=unused-argument
+    def get_short(self, level, alert, value, target=None, ntype=None, rule=None):
         tmpl = TEMPLATES[ntype]['short']
         return tmpl.generate(
             level=level, reactor=self.reactor, alert=alert, value=value, target=target).strip()
@@ -54,15 +54,18 @@ class AbstractHandler(_.with_metaclass(HandlerMeta)):
     def notify(self, level, alert, value, target=None, ntype=None, rule=None):
         raise NotImplementedError()
 
-registry = HandlerMeta  # pylint: disable=invalid-name
+registry = HandlerMeta
 
-from .hipchat import HipChatHandler      # pylint: disable=wrong-import-position
-from .http import HttpHandler            # pylint: disable=wrong-import-position
-from .log import LogHandler              # pylint: disable=wrong-import-position
-from .pagerduty import PagerdutyHandler  # pylint: disable=wrong-import-position
-from .slack import SlackHandler          # pylint: disable=wrong-import-position
-from .smtp import SMTPHandler            # pylint: disable=wrong-import-position
-from .cli import CliHandler              # pylint: disable=wrong-import-position
-from .opsgenie import OpsgenieHandler    # pylint: disable=wrong-import-position
-from .victorops import VictorOpsHandler  # pylint: disable=wrong-import-position
-from .telegram import TelegramHandler    # pylint: disable=wrong-import-position
+from .hipchat import HipChatHandler      # noqa
+from .http import HttpHandler            # noqa
+from .log import LogHandler              # noqa
+from .pagerduty import PagerdutyHandler  # noqa
+from .slack import SlackHandler          # noqa
+from .smtp import SMTPHandler            # noqa
+from .cli import CliHandler              # noqa
+from .opsgenie import OpsgenieHandler    # noqa
+from .victorops import VictorOpsHandler  # noqa
+from .telegram import TelegramHandler    # noqa
+from .sms import SMSHandler              # noqa
+from .call import CallHandler            # noqa
+from .sns import SNSHandler              # noqa

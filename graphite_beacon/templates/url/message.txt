@@ -11,8 +11,4 @@ Status: {{ value }}
 {% if rule %}
 Rule: {{ rule['raw'] }}{% end %}
 
---
-
-You can configure alerts for notifications in your congifuration file.
-See https://github.com/klen/graphite-beacon
 

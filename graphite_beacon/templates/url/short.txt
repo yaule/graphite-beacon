@@ -1,5 +1,15 @@
 {% if level == 'normal' %}
-{{ reactor.options.get('prefix') }} {{level.upper()}} <{{ alert.name }}>{% if target %} ({{target}}){% end %} is back to normal.
+ {% if target.split('.')[0] == 'pgp' %}
+ {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[2]}}, {{'.'.join(target.split('.')[3].split('-')[1:])}}) {% end %} is back to normal.
+{% end %}
+ {% if target.split('.')[0] == 'cloudwatch' %}
+ {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[3]}},{{target.split('.')[4]}},{{target.split('.')[5]}}) {% end %} is back to normal.
+{% end %}
 {% else %}
-{{ reactor.options.get('prefix') }} {{ level.upper() }} <{{ alert.name }}>{% if target %} ({{target}}){% end %} failed to load {{ alert.query }}. Response status is {{ value }}
+ {% if target.split('.')[0] == 'pgp' %}
+{{level.upper() }}  <{{ alert.name }}>{% if target %} ({{target.split('.')[2]}}, {{'.'.join(target.split('.')[3].split('-')[1:])}}){% end %} failed.
+{% end %}
+{% if target.split('.')[0] == 'cloudwatch' %}
+ {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[3]}},{{target.split('.')[4]}},{{target.split('.')[5]}}) {% end %} failed.
+{% end %}
 {% end %}

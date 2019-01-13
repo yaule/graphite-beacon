@@ -1,5 +1,39 @@
 {% if level == 'normal' %}
-{{ reactor.options.get('prefix') }} {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target}}){% end %} is back to normal.
+
+    {% if target.split('.')[0] == 'pgp' %}
+        {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[1]}}, {{target.split('.')[2]}}, {{target.split('.')[3]}}) {% end %} is back to normal.
+
+    {% elif target.split('.')[0] == 'aws' and target.split('.')[1] != 'ses' %}
+        {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[1]}}, {{target.split('.')[6]}}, {{target.split('.')[7]}}) {% end %} is back to normal.
+
+    {% elif target.split('.')[0] == 'fluentd-metrics' %}
+        {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[1]}}, {{target.split('.')[4]}}) {% end %} is back to normal.
+
+    {% elif target.split('.')[0] == 'cloudwatch' %}
+        {{level.upper() }}  <{{ alert.name }}>{% if target %} ({{target.split('.')[3]}},{{target.split('.')[2]}}){% end %} is back to normal.
+
+    {% else %}
+        {{level.upper() }}  <{{ alert.name }}> is back to normal.
+
+    {% end %}
+
 {% else %}
-{{ reactor.options.get('prefix') }} {{ level.upper() }} <{{ alert.name }}>{% if target %} ({{target}}){% end %} failed. Current value: {{ alert.convert(value) }}
+
+    {% if target.split('.')[0] == 'pgp' %}
+        {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[1]}}, {{target.split('.')[2]}}, {{target.split('.')[3]}}) {% end %} failed.
+
+    {% elif target.split('.')[0] == 'aws' and target.split('.')[1] != 'ses' %}
+        {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[1]}}, {{target.split('.')[6]}}, {{target.split('.')[7]}}) {% end %} failed.
+
+    {% elif target.split('.')[0] == 'fluentd-metrics' %}
+        {{level.upper() }} <{{ alert.name }}>{% if target %} ({{target.split('.')[1]}}, {{target.split('.')[4]}}) {% end %} failed.
+
+    {% elif target.split('.')[0] == 'cloudwatch' %}
+        {{level.upper() }}  <{{ alert.name }}>{% if target %} ({{target.split('.')[3]}},{{target.split('.')[2]}}){% end %} failed.
+
+    {% else %}
+        {{level.upper() }}  <{{ alert.name }}> failed.
+
+    {% end %}
+
 {% end %}

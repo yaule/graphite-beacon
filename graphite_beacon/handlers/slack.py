@@ -3,8 +3,8 @@ import json
 from tornado import httpclient as hc
 from tornado import gen
 
-from graphite_beacon.handlers import LOGGER, AbstractHandler
-from graphite_beacon.template import TEMPLATES
+from . import AbstractHandler, LOGGER
+from ..template import TEMPLATES
 
 
 class SlackHandler(AbstractHandler):
@@ -29,12 +29,12 @@ class SlackHandler(AbstractHandler):
         assert self.webhook, 'Slack webhook is not defined.'
 
         self.channel = self.options.get('channel')
-        if self.channel and not self.channel.startswith(('#', '@')):
+        if self.channel and not self.channel.startswith('#'):
             self.channel = '#' + self.channel
         self.username = self.options.get('username')
         self.client = hc.AsyncHTTPClient()
 
-    def get_message(self, level, alert, value, target=None, ntype=None, rule=None):  # pylint: disable=unused-argument
+    def get_message(self, level, alert, value, target=None, ntype=None, rule=None):
         msg_type = 'slack' if ntype == 'graphite' else 'short'
         tmpl = TEMPLATES[ntype][msg_type]
         return tmpl.generate(
