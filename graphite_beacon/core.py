@@ -46,6 +46,8 @@ class Reactor(object):
         'default_nan_value': 0,
         'ignore_nan': False,
         'loading_error': 'critical',
+        'time_zone': 'UTC',
+        'time_format': '%Y/%m/\%d %H:%M',
         'alerts': []
     }
 

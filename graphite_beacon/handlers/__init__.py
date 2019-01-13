@@ -69,3 +69,4 @@ from .telegram import TelegramHandler    # noqa
 from .sms import SMSHandler              # noqa
 from .call import CallHandler            # noqa
 from .sns import SNSHandler              # noqa
+from .wechat import WechatHandler        # noqa

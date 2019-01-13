@@ -167,7 +167,7 @@ class TelegramHandler(AbstractHandler):
         tmpl = TEMPLATES[ntype][msg_type]
         generated = tmpl.generate(
             level=level, reactor=self.reactor, alert=alert,
-            value=value, target=target,)
+            value=value, target=target, **self.options)
         return generated.decode().strip()
 
 
